@@ -2,20 +2,25 @@
 
 ## Purpose and Objective
 
-This EventManager system provides a framework for managing and communicating events. It can be used independently of Unity and supports type safety. Its primary purpose is to facilitate event communication and processing.
+This EventManager system provides a framework for managing and communicating events. It can be used independently of
+Unity and supports type safety. Its primary purpose is to facilitate event communication and processing.
 
 ## Advantages
 
-**Simplicity:** The system employs a minimalistic structure to provide essential functionality, reducing complexity. This speeds up your development process.
+**Simplicity:** The system employs a minimalistic structure to provide essential functionality, reducing complexity.
+This speeds up your development process.
 
-**Independence from Unity:** EventManager can be used without relying on Unity, making your code more portable and increasing its usability across different platforms or game engines.
+**Independence from Unity:** EventManager can be used without relying on Unity, making your code more portable and
+increasing its usability across different platforms or game engines.
 
-**Type Safety:** It ensures type safety by using generic structures, minimizing errors and helping you write more secure code.
+**Type Safety:** It ensures type safety by using generic structures, minimizing errors and helping you write more secure
+code.
 
 ## How to Use It
 
 **Defining Events**
 First, you need to define the events you want to use. For example:
+
 ``` csharp 
 public class OnStartGame : GameEvent { }
 public class OnFinishGame : GameEvent
@@ -35,22 +40,26 @@ private void OnEnable()
     EventManager.AddListener<OnFinishGame>(OnFinishGame);
 }
 ```
+
 **Broadcasting Events**
 To trigger an event, you can use Broadcast. For example:
+
 ``` csharp 
 if (Input.GetKeyDown(KeyCode.Space))
 {
-    EventManager.Broadcast(new OnStartGame());
+    EventManager.Broadcast(Events.onStartGame);
 }
+
 if (Input.GetKeyDown(KeyCode.Escape))
 {
-    OnFinishGame finishEvent = new OnFinishGame { WinState = true };
-    EventManager.Broadcast(finishEvent);
+    Events.onFinishGame.WinState = true;
+    EventManager.Broadcast(Events.onFinishGame);
 }
+
 ```
+
 **Removing Event Listeners**
 You can remove a listener using RemoveListener. For example:
-
 
 ``` csharp 
 if (Input.GetKeyDown(KeyCode.R))
@@ -78,4 +87,7 @@ private void OnFinishGame(OnFinishGame obj)
     Debug.Log("Game finished " + obj.WinState);
 }
 ```
-This guide is designed to explain the basic usage and advantages of your EventManager system. By using this system, you can enhance your event-driven programming approach and make your code more organized and manageable. Share it on GitHub to collaborate with other developers and gather feedback!
+
+This guide is designed to explain the basic usage and advantages of your EventManager system. By using this system, you
+can enhance your event-driven programming approach and make your code more organized and manageable. Share it on GitHub
+to collaborate with other developers and gather feedback!
