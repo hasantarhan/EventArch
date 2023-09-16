@@ -1,36 +1,68 @@
-﻿using System.Collections.Generic;
-using System;
-namespace EventArch.Code
+﻿using System;
+using System.Collections.Generic;
+
+namespace EventArch
 {
+    public class GameEvent
+    {
+    }
+
     public static class EventManager
     {
-        private static Dictionary<Type, EventBase> eventsDictionary = new();
-        private static Events events;
+        private static readonly Dictionary<Type, Action<GameEvent>> eventTypeToListener = new();
+        private static readonly Dictionary<Delegate, Action<GameEvent>> listenerToAction = new();
 
-        public static void InitializeEvents()
+        public static void AddListener<T>(Action<T> listener) where T : GameEvent
         {
-            events = new Events();
-        }
-        public static T GetEvent<T> () where T : EventBase, new()
-        {
-            var type = typeof(T);
-            if (eventsDictionary.TryGetValue(type, out EventBase gameEvent))
+            if (!listenerToAction.ContainsKey(listener))
             {
-                return (T)gameEvent;
-            }
+                Action<GameEvent> action = (e) => listener((T)e);
+                listenerToAction[listener] = action;
 
-            return null;
-        }
-        public static void AddListener<T>(Action<T> action)
-        {
-            var type = typeof(T);
-            if (eventsDictionary.TryGetValue(type, out EventBase gameEvent))
-            {
-                if (gameEvent is GameEventBase<T> gameEventBase)
+                if (eventTypeToListener.TryGetValue(typeof(T), out Action<GameEvent> existingAction))
                 {
-                    gameEventBase.AddListener(action);
+                    eventTypeToListener[typeof(T)] += action;
+                }
+                else
+                {
+                    eventTypeToListener[typeof(T)] = action;
                 }
             }
+        }
+
+        public static void RemoveListener<T>(Action<T> listener) where T : GameEvent
+        {
+            if (listenerToAction.TryGetValue(listener, out var action))
+            {
+                if (eventTypeToListener.TryGetValue(typeof(T), out var existingAction))
+                {
+                    existingAction -= action;
+                    if (existingAction == null)
+                    {
+                        eventTypeToListener.Remove(typeof(T));
+                    }
+                    else
+                    {
+                        eventTypeToListener[typeof(T)] = existingAction;
+                    }
+                }
+
+                listenerToAction.Remove(listener);
+            }
+        }
+
+        public static void Broadcast(GameEvent gameEvent)
+        {
+            if (eventTypeToListener.TryGetValue(gameEvent.GetType(), out var action))
+            {
+                action.Invoke(gameEvent);
+            }
+        }
+
+        public static void Clear()
+        {
+            eventTypeToListener.Clear();
+            listenerToAction.Clear();
         }
     }
 }

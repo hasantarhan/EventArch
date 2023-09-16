@@ -1,16 +1,14 @@
-﻿namespace EventArch.Code
-{ 
-    public class Events
+﻿namespace EventArch
+{
+    public static class Events
     {
-        public OnStartGame OnStartGame { get; } = new();
-        public OnFinishGame OnFinishGame { get; } = new();  
+       public static OnStartGame onStartGame = new OnStartGame();
+       public static OnFinishGame onFinishGame = new OnFinishGame();
     }
+    public class OnStartGame : GameEvent { }
 
-    public class OnStartGame : GameEventBase { }
-
-    public class OnFinishGame : GameEventBase
+    public class OnFinishGame : GameEvent
     {
-        public bool WinState { get; private set; }
+        public bool WinState { get; set; }
     }
-    public class OnTakeDamage : GameEventBase<int> { }
 }
