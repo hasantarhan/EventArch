@@ -22,6 +22,11 @@ code.
 First, you need to define the events you want to use. For example:
 
 ``` csharp 
+public static class Events
+{
+    public static OnStartGame onStartGame = new OnStartGame();
+    public static OnFinishGame onFinishGame = new OnFinishGame();
+}
 public class OnStartGame : GameEvent { }
 public class OnFinishGame : GameEvent
 {
@@ -87,7 +92,3 @@ private void OnFinishGame(OnFinishGame obj)
     Debug.Log("Game finished " + obj.WinState);
 }
 ```
-
-This guide is designed to explain the basic usage and advantages of your EventManager system. By using this system, you
-can enhance your event-driven programming approach and make your code more organized and manageable. Share it on GitHub
-to collaborate with other developers and gather feedback!
